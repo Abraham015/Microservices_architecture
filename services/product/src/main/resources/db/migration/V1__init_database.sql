@@ -14,5 +14,10 @@ CREATE TABLE IF NOT EXISTS product(
         constraint foreign_key references category
 );
 
-CREATE SEQUENCE IF NOT EXISTS category_seq increment by 50;
-CREATE SEQUENCE IF NOT EXISTS product_seq increment by 50;
+
+CREATE SEQUENCE IF NOT EXISTS category_seq increment by 1;
+CREATE SEQUENCE IF NOT EXISTS product_seq increment by 1;
+ALTER SEQUENCE category_seq RESTART WITH 1;
+ALTER SEQUENCE product_seq RESTART WITH 1;
+ALTER SEQUENCE category_seq INCREMENT BY 1;
+ALTER SEQUENCE product_seq INCREMENT BY 1;
