@@ -1,1 +1,2 @@
-**/target/
+# Ignorar todas las carpetas 'target' dentro de 'services'
+/services/**/target/
