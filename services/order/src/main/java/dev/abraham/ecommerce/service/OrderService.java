@@ -1,16 +1,14 @@
 package dev.abraham.ecommerce.service;
 
 import dev.abraham.ecommerce.client.CustomerClient;
+import dev.abraham.ecommerce.client.PaymentClient;
 import dev.abraham.ecommerce.client.ProductClient;
 import dev.abraham.ecommerce.exception.BusinessException;
 import dev.abraham.ecommerce.kafka.OrderProducer;
 import dev.abraham.ecommerce.mapper.OrderMapper;
 import dev.abraham.ecommerce.model.Order;
 import dev.abraham.ecommerce.repository.OrderRepository;
-import dev.abraham.ecommerce.request.OrderConfirmation;
-import dev.abraham.ecommerce.request.OrderLineRequest;
-import dev.abraham.ecommerce.request.OrderRequest;
-import dev.abraham.ecommerce.request.PurchaseRequest;
+import dev.abraham.ecommerce.request.*;
 import dev.abraham.ecommerce.response.CustomerResponse;
 import dev.abraham.ecommerce.response.OrderResponse;
 import dev.abraham.ecommerce.response.PurchaseResponse;
@@ -30,6 +28,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
+    private final PaymentClient paymentClient;
 
     public Integer createOrder(OrderRequest request) {
         //check the customer->customer-service
@@ -52,6 +51,14 @@ public class OrderService {
             );
         }
         //start payment process->payment-service
+        PaymentRequest paymentRequest=new PaymentRequest(
+                request.amount(),
+                request.paymentMethod(),
+                order.getId(),
+                order.getReference(),
+                customer
+        );
+        paymentClient.requestOrderPayment(paymentRequest);
         //send the order confirmation->notification-service (using kafka)
         orderProducer.sendOrderConfirmation(
                 new OrderConfirmation(
