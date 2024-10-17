@@ -1,0 +1,80 @@
+package dev.abraham.ecommerce.service;
+
+import dev.abraham.ecommerce.client.CustomerClient;
+import dev.abraham.ecommerce.client.ProductClient;
+import dev.abraham.ecommerce.exception.BusinessException;
+import dev.abraham.ecommerce.kafka.OrderProducer;
+import dev.abraham.ecommerce.mapper.OrderMapper;
+import dev.abraham.ecommerce.model.Order;
+import dev.abraham.ecommerce.repository.OrderRepository;
+import dev.abraham.ecommerce.request.OrderConfirmation;
+import dev.abraham.ecommerce.request.OrderLineRequest;
+import dev.abraham.ecommerce.request.OrderRequest;
+import dev.abraham.ecommerce.request.PurchaseRequest;
+import dev.abraham.ecommerce.response.CustomerResponse;
+import dev.abraham.ecommerce.response.OrderResponse;
+import dev.abraham.ecommerce.response.PurchaseResponse;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+    private final OrderRepository orderRepository;
+    private final CustomerClient customerClient;
+    private final ProductClient productClient;
+    private final OrderMapper orderMapper;
+    private final OrderLineService orderLineService;
+    private final OrderProducer orderProducer;
+
+    public Integer createOrder(OrderRequest request) {
+        //check the customer->customer-service
+        CustomerResponse customer=customerClient.findCustomerById(request.customerId())
+                .orElseThrow(()->new BusinessException("Customer does not exist"));
+
+        //purchase the products->product-service (RestTemplate)
+        List<PurchaseResponse> purchaseProducts=productClient.purchaseProducts(request.products());
+        //persist order
+        Order order=orderRepository.save(orderMapper.toOrder(request));
+        //persist order lines
+        for (PurchaseRequest purchase: request.products()){
+            orderLineService.saveOrderLine(
+                    new OrderLineRequest(
+                            null,
+                            order.getId(),
+                            purchase.productId(),
+                            purchase.quantity()
+                    )
+            );
+        }
+        //start payment process->payment-service
+        //send the order confirmation->notification-service (using kafka)
+        orderProducer.sendOrderConfirmation(
+                new OrderConfirmation(
+                        request.reference(),
+                        request.amount(),
+                        request.paymentMethod(),
+                        customer,
+                        purchaseProducts
+                )
+        );
+        return order.getId();
+    }
+
+    public List<OrderResponse> findAll() {
+        return orderRepository.findAll()
+                .stream()
+                .map(orderMapper::toOrderResponse)
+                .collect(Collectors.toList());
+    }
+
+    public OrderResponse findOrderById(Integer orderId) {
+        return orderRepository.findById(orderId)
+                .map(orderMapper::toOrderResponse)
+                .orElseThrow(()->new EntityNotFoundException("Order does not exist"));
+    }
+}
