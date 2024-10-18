@@ -1,5 +1,6 @@
 package dev.abraham.ecommerce.kafka.order;
 
+import dev.abraham.ecommerce.enums.PaymentMethod;
 import dev.abraham.ecommerce.model.Customer;
 import dev.abraham.ecommerce.model.Product;
 

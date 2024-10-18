@@ -19,7 +19,7 @@ import java.util.List;
 @Data
 @Builder
 @Entity
-@EntityListeners((AuditingEntityListener.class))
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "customer_order")
 public class Order {
     @Id
