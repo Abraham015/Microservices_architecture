@@ -1,5 +1,6 @@
 package dev.abraham.ecommerce.model;
 
+import dev.abraham.ecommerce.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

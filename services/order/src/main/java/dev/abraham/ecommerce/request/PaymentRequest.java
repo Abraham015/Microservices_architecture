@@ -1,6 +1,6 @@
 package dev.abraham.ecommerce.request;
 
-import dev.abraham.ecommerce.model.PaymentMethod;
+import dev.abraham.ecommerce.enums.PaymentMethod;
 import dev.abraham.ecommerce.response.CustomerResponse;
 
 import java.math.BigDecimal;

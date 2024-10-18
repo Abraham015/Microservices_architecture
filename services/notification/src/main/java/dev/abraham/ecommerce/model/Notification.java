@@ -1,5 +1,6 @@
 package dev.abraham.ecommerce.model;
 
+import dev.abraham.ecommerce.enums.NotificationType;
 import dev.abraham.ecommerce.kafka.order.OrderConfirmation;
 import dev.abraham.ecommerce.kafka.payment.PaymentConfirmation;
 import lombok.AllArgsConstructor;

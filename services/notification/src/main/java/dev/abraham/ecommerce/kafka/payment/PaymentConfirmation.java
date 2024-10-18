@@ -1,6 +1,6 @@
 package dev.abraham.ecommerce.kafka.payment;
 
-import dev.abraham.ecommerce.model.PaymentMethod;
+import dev.abraham.ecommerce.enums.PaymentMethod;
 
 import java.math.BigDecimal;
 

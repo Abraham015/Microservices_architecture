@@ -1,6 +1,6 @@
 package dev.abraham.ecommerce.request;
 
-import dev.abraham.ecommerce.model.PaymentMethod;
+import dev.abraham.ecommerce.enums.PaymentMethod;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
