@@ -5,7 +5,6 @@ import dev.abraham.ecommerce.model.Product;
 import dev.abraham.ecommerce.request.ProductRequest;
 import dev.abraham.ecommerce.response.ProductPurchaseResponse;
 import dev.abraham.ecommerce.response.ProductResponse;
-import jakarta.validation.constraints.Positive;
 import org.springframework.stereotype.Service;
 
 @Service

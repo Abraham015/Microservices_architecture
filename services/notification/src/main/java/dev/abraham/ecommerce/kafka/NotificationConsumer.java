@@ -29,9 +29,11 @@ public class NotificationConsumer {
                         .build()
         );
 
+        String customerName=confirmation.customerFirstName()+" "+confirmation.customerLastname();
+
         emailService.sendPaymentSuccessEmail(
                 confirmation.customerEmail(),
-                confirmation.customerFirstName()+" "+confirmation.customerLastname(),
+                customerName,
                 confirmation.amount(),
                 confirmation.orderReference()
         );
@@ -49,7 +51,6 @@ public class NotificationConsumer {
         emailService.sendOrderConfirmationEmail(
                 confirmation.customer().email(),
                 confirmation.customer().firstName()+" "+confirmation.customer().lastName(),
-                confirmation.totalAmount(),
                 confirmation.orderReference(),
                 confirmation.products()
         );

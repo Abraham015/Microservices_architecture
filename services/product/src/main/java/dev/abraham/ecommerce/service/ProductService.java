@@ -25,7 +25,9 @@ public class ProductService {
     private final ProductMapper productMapper;
 
     public Integer createProduct(ProductRequest request) {
+        Integer lastId = productRepository.findTopByOrderByIdDesc().map(Product::getId).orElse(0);
         Product product=productMapper.toProduct(request);
+        product.setId(lastId + 1);
         return productRepository.save(product).getId();
     }
 

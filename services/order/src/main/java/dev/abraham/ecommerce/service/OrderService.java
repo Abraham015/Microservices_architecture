@@ -16,6 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,9 +51,16 @@ public class OrderService {
                     )
             );
         }
+
+        BigDecimal amount=new BigDecimal("0");
+
+        for (PurchaseResponse purchase: purchaseProducts){
+            amount = amount.add(new BigDecimal(purchase.quantity()).multiply(purchase.price()));
+        }
+
         //start payment process->payment-service
         PaymentRequest paymentRequest=new PaymentRequest(
-                request.amount(),
+                amount,
                 request.paymentMethod(),
                 order.getId(),
                 order.getReference(),

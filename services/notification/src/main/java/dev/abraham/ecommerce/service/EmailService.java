@@ -52,7 +52,7 @@ public class EmailService {
     }
 
     @Async
-    public void sendOrderConfirmationEmail(String to, String customerName, BigDecimal amount, String orderReference,
+    public void sendOrderConfirmationEmail(String to, String customerName, String orderReference,
                                            List<Product> products) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage,
@@ -60,11 +60,14 @@ public class EmailService {
                 StandardCharsets.UTF_8.name());
         messageHelper.setFrom("abraham@gmail.com");
         messageHelper.setTo(to);
-
+        BigDecimal amount=new BigDecimal("0");
+        for (Product product : products) {
+            amount = amount.add(new BigDecimal(product.quantity()).multiply(product.price()));
+        }
         final String templateName= EmailTemplateName.ORDER_CONFIRMATION.getTemplateName();
         Map<String, Object> variables = new HashMap<>();
         variables.put("customerName", customerName);
-        variables.put("amount", amount);
+        variables.put("totalAmount", amount);
         variables.put("orderReference", orderReference);
         variables.put("products", products);
 

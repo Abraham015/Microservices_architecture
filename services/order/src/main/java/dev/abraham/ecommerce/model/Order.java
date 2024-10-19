@@ -23,7 +23,7 @@ import java.util.List;
 @Table(name = "customer_order")
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Integer id;
     private String reference;
     private BigDecimal amount;
