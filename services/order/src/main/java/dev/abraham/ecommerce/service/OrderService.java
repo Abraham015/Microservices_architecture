@@ -39,7 +39,15 @@ public class OrderService {
         //purchase the products->product-service (RestTemplate)
         List<PurchaseResponse> purchaseProducts=productClient.purchaseProducts(request.products());
         //persist order
-        Order order=orderRepository.save(orderMapper.toOrder(request));
+        BigDecimal amount=new BigDecimal("0");
+
+        for (PurchaseResponse purchase: purchaseProducts){
+            amount = amount.add(new BigDecimal(purchase.quantity()).multiply(purchase.price()));
+        }
+
+        Order preOrder=orderMapper.toOrder(request);
+        preOrder.setAmount(amount);
+        Order order=orderRepository.save(preOrder);
         //persist order lines
         for (PurchaseRequest purchase: request.products()){
             orderLineService.saveOrderLine(
@@ -50,12 +58,6 @@ public class OrderService {
                             purchase.quantity()
                     )
             );
-        }
-
-        BigDecimal amount=new BigDecimal("0");
-
-        for (PurchaseResponse purchase: purchaseProducts){
-            amount = amount.add(new BigDecimal(purchase.quantity()).multiply(purchase.price()));
         }
 
         //start payment process->payment-service
