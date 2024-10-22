@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Login = () => {
-
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     email: "",
@@ -18,38 +19,65 @@ const Login = () => {
     }));
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    // Validar que las credenciales no estén vacías
+    if (credentials.email === '' || credentials.password === '') {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Email/Password is missing',
+        icon: 'error',
+        confirmButtonText: 'Try Again'
+      });
+      setLoading(false);
+      return; // Detener la ejecución si hay un error
+    }
+
     try {
-      const response = await fetch("http://localhost:8222/api/v1/login", {
-        method: "POST",
+      console.log(JSON.stringify(credentials)); // Verifica el objeto credentials
+      const response = await fetch('http://localhost:8222/api/v1/customers/login', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
       });
 
-      if (!response.ok) {
-        throw new Error("Error en la autenticación");
+      const responseText = await response.text(); // Leer el cuerpo como texto
+
+      let data;
+      try {
+        data = JSON.parse(responseText); // Intentar parsear el texto como JSON
+      } catch (error) {
+        data = responseText; // Si no es JSON, usar el texto
       }
 
-      const data = await response.json();
-      console.log("Usuario autenticado:", data);
+      if (!response.ok) {
+        throw new Error(data); // Lanzar error si la respuesta no es OK
+      }
 
-      // Mostrar mensaje de éxito
       Swal.fire({
-        icon: "success",
-        title: "Login successful",
+        title: 'Success!',
+        text: 'Login success',
+        icon: 'success',
         confirmButtonText: 'Ok'
-      }).then(() => {
-        navigate("/products");
       });
+
+      navigate("/");
     } catch (error) {
-      console.error("Error al iniciar sesión:", error);
+      setError(error.message);
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Email/password incorrect. Try again!"
+        title: 'Error!',
+        text: 'Wrong credentials', // Mensaje más claro
+        icon: 'error',
+        confirmButtonText: 'Try Again'
       });
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
