@@ -1,5 +1,7 @@
 package dev.abraham.ecommerce.controller;
 
+import dev.abraham.ecommerce.model.Customer;
+import dev.abraham.ecommerce.request.CustomerLogin;
 import dev.abraham.ecommerce.request.CustomerRequest;
 import dev.abraham.ecommerce.response.CustomerResponse;
 import dev.abraham.ecommerce.service.CustomerService;
@@ -23,6 +25,15 @@ public class CustomerController {
             return ResponseEntity.ok(id);
         else
             return ResponseEntity.badRequest().body("Customer already exists");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Boolean> login(@RequestBody @Valid CustomerLogin request){
+        Customer customer=customerService.findByIdAndPassword(request);
+        if(customer!=null)
+            return ResponseEntity.ok(true);
+        else
+            return ResponseEntity.badRequest().body(false);
     }
 
     @PutMapping

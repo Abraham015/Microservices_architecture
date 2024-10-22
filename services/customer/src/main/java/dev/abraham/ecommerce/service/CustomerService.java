@@ -4,6 +4,7 @@ import dev.abraham.ecommerce.exception.CustomerNotFoundException;
 import dev.abraham.ecommerce.mapper.CustomerMapper;
 import dev.abraham.ecommerce.model.Customer;
 import dev.abraham.ecommerce.repository.CustomerRepository;
+import dev.abraham.ecommerce.request.CustomerLogin;
 import dev.abraham.ecommerce.request.CustomerRequest;
 import dev.abraham.ecommerce.response.CustomerResponse;
 import jakarta.validation.Valid;
@@ -74,5 +75,9 @@ public class CustomerService {
 
     public void deleteCustomer(String customerId) {
         customerRepository.deleteById(customerId);
+    }
+
+    public Customer findByIdAndPassword(@Valid CustomerLogin request) {
+        return customerRepository.findByEmailAndPassword(request.email(), request.password());
     }
 }
