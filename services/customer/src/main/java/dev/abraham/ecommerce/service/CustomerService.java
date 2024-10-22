@@ -21,8 +21,16 @@ public class CustomerService {
     private final CustomerMapper customerMapper;
 
     public String createCustomer(CustomerRequest request) {
-        Customer customer=customerRepository.save(customerMapper.toCustomer(request));
-        return customer.getId();
+        //Verify that the customer does not exist
+        if(findCustomerByEmail(request)==null){
+            Customer customer=customerRepository.save(customerMapper.toCustomer(request));
+            return customer.getId();
+        }
+        return null;
+    }
+
+    private Customer findCustomerByEmail(CustomerRequest request) {
+        return customerRepository.findByEmail(request.email());
     }
 
     public void updateCustomer(@Valid CustomerRequest request) {

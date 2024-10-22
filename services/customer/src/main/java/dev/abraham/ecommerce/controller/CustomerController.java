@@ -16,9 +16,13 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<String> createCustomer(@RequestBody @Valid CustomerRequest request){
-        return ResponseEntity.ok(customerService.createCustomer(request));
+        String id=customerService.createCustomer(request);
+        if(id!=null)
+            return ResponseEntity.ok(id);
+        else
+            return ResponseEntity.badRequest().body("Customer already exists");
     }
 
     @PutMapping
