@@ -1,6 +1,14 @@
 spring:
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
       discovery:
         locator:
           enabled: true
@@ -9,6 +17,15 @@ spring:
           uri: lb:http://CUSTOMER-SERVICE
           predicates:
             - Path=/api/v1/customers/**
+          metadata:
+            cors:
+              allowedOrigins: '*'
+              allowedMethods:
+                - GET
+                - POST
+                - DELETE
+                - PATCH
+              allowedHeaders: '*'
         - id: order-service
           uri: lb:http://ORDER-SERVICE
           predicates:
@@ -25,6 +42,14 @@ spring:
           uri: lb:http://PAYMENT-SERVICE
           predicates:
             - Path=/api/v1/payments/**
+          metadata:
+            cors:
+              allowedOrigins: '*'
+              allowedMethods:
+                - GET
+                - POST
+              allowedHeaders: '*'
+              maxAge: 30
 
 server:
   port: 8222
