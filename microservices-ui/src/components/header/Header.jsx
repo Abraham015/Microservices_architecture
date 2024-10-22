@@ -47,7 +47,7 @@ const Header = () => {
             </li>
           </ul>
           {
-            location.pathname !== "/login"&&(
+            location.pathname !== "/login"  && location.pathname !== "/register" &&(
                   <Link to="/login" className="btn btn-info text-bg-primary">
                     <i className="fa fa-sign-in"></i> Login
                   </Link>
