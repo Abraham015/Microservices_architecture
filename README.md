@@ -48,6 +48,8 @@ This project is built on a microservices architecture consisting of the followin
 - **Kafka**
 - **MongoDB**
 - **PostgreSQL**
+- **SwaggerUI**
+- **OpenAPI**
 
 ### Frontend
 - **React**
