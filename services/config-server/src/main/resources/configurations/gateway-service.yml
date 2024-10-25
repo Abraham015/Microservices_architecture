@@ -5,26 +5,66 @@ spring:
         locator:
           enabled: true
       routes:
+        # Ruta para Customer Service
         - id: customer-service
-          uri: lb:http://CUSTOMER-SERVICE
+          uri: lb://CUSTOMER-SERVICE
           predicates:
             - Path=/api/v1/customers/**
+
+        # Ruta para Order Service
         - id: order-service
-          uri: lb:http://ORDER-SERVICE
+          uri: lb://ORDER-SERVICE
           predicates:
             - Path=/api/v1/orders/**
+
+        # Ruta para Order Lines Service
         - id: order-lines-service
-          uri: lb:http://ORDER-SERVICE
+          uri: lb://ORDER-SERVICE
           predicates:
             - Path=/api/v1/order-lines/**
+
+        # Ruta para Product Service
         - id: product-service
-          uri: lb:http://PRODUCT-SERVICE
+          uri: lb://PRODUCT-SERVICE
           predicates:
             - Path=/api/v1/products/**
+
+        # Ruta para Payment Service
         - id: payment-service
-          uri: lb:http://PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
           predicates:
             - Path=/api/v1/payments/**
+
+        # Configuración de Swagger para Customer Service
+        - id: customer-service-docs
+          uri: lb://CUSTOMER-SERVICE
+          predicates:
+            - Path=/customer-service/swagger-ui.html, /customer-service/api-docs/**, /customer-service/swagger-resources/**, /customer-service/webjars/**
+
+        # Configuración de Swagger para Order Service
+        - id: order-service-docs
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/swagger-ui.html, /order-service/api-docs/**, /order-service/swagger-resources/**, /order-service/webjars/**
+
+        # Configuración de Swagger para Order Lines Service
+        - id: order-lines-service-docs
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-lines-service/swagger-ui.html, /order-lines-service/api-docs/**, /order-lines-service/swagger-resources/**, /order-lines-service/webjars/**
+
+        # Configuración de Swagger para Product Service
+        - id: product-service-docs
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/product-service/swagger-ui/**, /product-service/api-docs/**
+
+        # Configuración de Swagger para Payment Service
+        - id: payment-service-docs
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payment-service/swagger-ui.html, /payment-service/api-docs/**, /payment-service/swagger-resources/**, /payment-service/webjars/**
+
   security:
     oauth2:
       resourceserver:
